@@ -7,4 +7,4 @@ module.exports =
     @backgroundTipsView = new BackgroundTipsView(state.backgroundTipsViewState)
 
   deactivate: ->
-    @backgroundTipsView.destroy()
+    @backgroundTipsView.detach()

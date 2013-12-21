@@ -14,9 +14,6 @@ class BackgroundTipsView extends View
   attach: ->
     atom.workspaceView.vertical.append(this)
 
-  # Tear down any state and detach
-  destroy: ->
-    @detach()
 
   start: =>
     @renderTips()
