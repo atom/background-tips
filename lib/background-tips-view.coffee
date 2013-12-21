@@ -42,6 +42,7 @@ class BackgroundTipsView extends View
   stop: =>
     @detach()
     clearInterval(@interval) if @interval?
+    @interval = null
 
   randomizeIndex: ->
     len = Tips.length
