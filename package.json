@@ -1,0 +1,19 @@
+{
+  "name": "background-tips",
+  "main": "./lib/background-tips",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A short description of your package",
+  "repository": "https://github.com/atom/background-tips",
+  "licenses": [
+    {
+      "type": "Apache",
+      "url": "http://github.com/atom/background-tips/raw/master/LICENSE.md"
+    }
+  ],
+  "engines": {
+    "atom": ">0.39.0"
+  },
+  "dependencies": {
+  }
+}
