@@ -3,7 +3,7 @@
   "main": "./lib/background-tips",
   "version": "0.0.0",
   "private": true,
-  "description": "A short description of your package",
+  "description": "Shows application tips in the background when no buffers are open.",
   "repository": "https://github.com/atom/background-tips",
   "licenses": [
     {
@@ -12,8 +12,6 @@
     }
   ],
   "engines": {
-    "atom": ">0.39.0"
-  },
-  "dependencies": {
+    "atom": ">0.42.0"
   }
 }
