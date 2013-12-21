@@ -1,5 +1,7 @@
 {_, View} = require 'atom'
 
+Tips = require './tips'
+
 module.exports =
 class BackgroundTipsView extends View
   @startDelay: 1000
@@ -42,20 +44,19 @@ class BackgroundTipsView extends View
     clearInterval(@interval) if @interval?
 
   randomizeIndex: ->
-    len = @constructor.tips.length
+    len = Tips.length
     @index = Math.round(Math.random() * len) % len
 
   showNextTip: =>
-    tips = @constructor.tips
-    @index = ++@index % tips.length
+    @index = ++@index % Tips.length
     @message.fadeOut @constructor.fadeDuration, =>
-      @message.html(tips[@index])
+      @message.html(Tips[@index])
       @message.fadeIn(@constructor.fadeDuration)
 
   renderTips: ->
     return if @tipsRendered
-    for tip, i in @constructor.tips
-      @constructor.tips[i] = @renderTip(tip)
+    for tip, i in Tips
+      Tips[i] = @renderTip(tip)
     @tipsRendered = true
 
   renderTip: (str) ->
@@ -66,9 +67,3 @@ class BackgroundTipsView extends View
       else
         command
     str
-
-
-  @tips: [
-    'Everything Atom can do is in the Command Palette. See it by using {command-palette:toggle}',
-    'Toggle the Tree View with {tree-view:toggle}'
-  ]
