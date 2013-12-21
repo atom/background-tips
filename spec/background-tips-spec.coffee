@@ -59,6 +59,12 @@ describe "BackgroundTips", ->
       atom.workspaceView.getActivePane().destroyItem(atom.workspaceView.getActivePaneItem())
       expect(backgroundTipsView.parent()).toExist()
 
+      atom.workspaceView.openSync()
+      expect(backgroundTipsView.parent()).not.toExist()
+
+      atom.workspaceView.getActivePane().destroyItem(atom.workspaceView.getActivePaneItem())
+      expect(backgroundTipsView.parent()).toExist()
+
   describe "when a buffer opens after starting", ->
     beforeEach ->
       atom.workspaceView.attachToDom()
