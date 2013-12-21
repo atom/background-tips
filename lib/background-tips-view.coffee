@@ -5,7 +5,7 @@ Tips = require './tips'
 module.exports =
 class BackgroundTipsView extends View
   @startDelay: 1000
-  @displayDuration: 6000
+  @displayDuration: 10000
   @fadeDuration: 300
 
   @content: ->
