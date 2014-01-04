@@ -19,7 +19,7 @@ class BackgroundTipsView extends View
     setTimeout @start, @constructor.startDelay
 
   attach: ->
-    atom.workspaceView.vertical.append(this)
+    atom.workspaceView.appendToTop(this)
 
   onActiveItemChanged: =>
     if @getActiveItem()
