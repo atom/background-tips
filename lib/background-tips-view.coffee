@@ -15,23 +15,23 @@ class BackgroundTipsView extends View
   initialize: ->
     @index = -1
 
-    atom.workspaceView.on 'pane-container:active-pane-item-changed', @onActiveItemChanged
+    atom.workspaceView.on 'pane-container:active-pane-item-changed pane:attached pane:removed', => @updateVisibility()
     setTimeout @start, @constructor.startDelay
 
   attach: ->
-    atom.workspaceView.appendToTop(this)
+    atom.workspaceView.getActivePane().append(this)
 
-  onActiveItemChanged: =>
-    if @getActiveItem()
-      @stop()
-    else
+  updateVisibility: ->
+    if @shouldBeAttached()
       @start()
+    else
+      @stop()
 
-  getActiveItem: ->
-    atom.workspaceView.getActivePaneItem()
+  shouldBeAttached: ->
+    atom.workspaceView.getPanes().length is 1 and not atom.workspaceView.getActivePaneItem()?
 
   start: =>
-    return if @getActiveItem() or @interval
+    return if not @shouldBeAttached() or @interval?
     @renderTips()
     @randomizeIndex()
     @message.hide()

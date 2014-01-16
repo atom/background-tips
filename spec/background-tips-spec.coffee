@@ -1,4 +1,4 @@
-{WorkspaceView} = require 'atom'
+{WorkspaceView, $} = require 'atom'
 
 BackgroundTips = require '../lib/background-tips'
 BackgroundTipsView = require '../lib/background-tips-view'
@@ -10,67 +10,77 @@ BackgroundTipsView = require '../lib/background-tips-view'
 
 describe "BackgroundTips", ->
   [backgroundTips, backgroundTipsView] = []
-  beforeEach ->
-    atom.workspaceView = new WorkspaceView()
 
+  beforeEach ->
     BackgroundTipsView.displayDuration = 50
     BackgroundTipsView.fadeDuration = 1
 
+  activatePackage = ->
     backgroundTips = atom.packages.activatePackage('background-tips', immediate: true)
     backgroundTipsView = backgroundTips.mainModule.backgroundTipsView
 
-  it "creates the view", ->
-    expect(backgroundTipsView).toBeDefined()
+  describe "when the package is activated when there is only one pane", ->
+    beforeEach ->
+      atom.workspaceView = new WorkspaceView
+      expect(atom.workspaceView.getPanes().length).toBe 1
 
-  describe "when there are no buffers open", ->
-    it "attaches after a delay", ->
-      expect(backgroundTipsView.parent()).not.toExist()
-      advanceClock BackgroundTipsView.startDelay + 1
-      expect(backgroundTipsView.parent()).toExist()
+    describe "when the pane is empty", ->
+      it "attaches the view after a delay", ->
+        expect(atom.workspaceView.getActivePane().getItems().length).toBe 0
+        activatePackage()
 
-    describe "when the tips are attached", ->
-      beforeEach ->
+        expect(backgroundTipsView.parent()).not.toExist()
         advanceClock BackgroundTipsView.startDelay + 1
+        expect(backgroundTipsView.parent()).toExist()
 
-      it "has text in the message", ->
-        expect(backgroundTipsView.message.text()).toBeTruthy()
+    describe "when the pane is not empty", ->
+      it "does not attach the view", ->
+        atom.workspaceView.getActivePane().activateItem($("item"))
 
-      it "changes text in the message", ->
-        oldText = backgroundTipsView.message.text()
+        activatePackage()
 
-        waits BackgroundTipsView.displayDuration + BackgroundTipsView.fadeDuration
+        advanceClock BackgroundTipsView.startDelay + 1
+        expect(backgroundTipsView.parent()).not.toExist()
 
-        runs ->
-          expect(backgroundTipsView.message.text()).not.toEqual(oldText)
+    describe "when a second pane is created", ->
+      it "detaches the view", ->
+        activatePackage()
+        advanceClock BackgroundTipsView.startDelay + 1
+        expect(backgroundTipsView.parent()).toExist()
 
-  describe "when there is a buffer open", ->
+        atom.workspaceView.getActivePane().splitRight()
+        expect(backgroundTipsView.parent()).not.toExist()
+
+  describe "when the package is activated when there are multiple panes", ->
     beforeEach ->
-      atom.workspaceView.openSync()
-      atom.workspaceView.attachToDom()
+      atom.workspaceView = new WorkspaceView
+      atom.workspaceView.getActivePane().splitRight()
+      expect(atom.workspaceView.getPanes().length).toBe 2
 
-    it "does not attach after a delay", ->
-      expect(backgroundTipsView.parent()).not.toExist()
+    it "does not attach the view", ->
+      activatePackage()
       advanceClock BackgroundTipsView.startDelay + 1
       expect(backgroundTipsView.parent()).not.toExist()
 
-    it "attaches when the buffer is closed", ->
-      advanceClock BackgroundTipsView.startDelay + 1
-      expect(backgroundTipsView.parent()).not.toExist()
-      atom.workspaceView.getActivePane().destroyItem(atom.workspaceView.getActivePaneItem())
-      expect(backgroundTipsView.parent()).toExist()
+    describe "when all but the last pane is destroyed", ->
+      it "attaches the view", ->
+        activatePackage()
+        atom.workspaceView.getActivePane().remove()
+        advanceClock BackgroundTipsView.startDelay + 1
+        expect(backgroundTipsView.parent()).toExist()
 
-      atom.workspaceView.openSync()
-      expect(backgroundTipsView.parent()).not.toExist()
-
-      atom.workspaceView.getActivePane().destroyItem(atom.workspaceView.getActivePaneItem())
-      expect(backgroundTipsView.parent()).toExist()
-
-  describe "when a buffer opens after starting", ->
+  describe "when the view is attached", ->
     beforeEach ->
-      atom.workspaceView.attachToDom()
+      atom.workspaceView = new WorkspaceView
+      expect(atom.workspaceView.getPanes().length).toBe 1
+      activatePackage()
       advanceClock BackgroundTipsView.startDelay + 1
 
-    it "detaches the background tips", ->
-      expect(backgroundTipsView.parent()).toExist()
-      atom.workspaceView.openSync()
-      expect(backgroundTipsView.parent()).not.toExist()
+    it "has text in the message", ->
+      expect(backgroundTipsView.message.text()).toBeTruthy()
+
+    it "changes text in the message", ->
+      oldText = backgroundTipsView.message.text()
+      waits BackgroundTipsView.displayDuration + BackgroundTipsView.fadeDuration
+      runs ->
+        expect(backgroundTipsView.message.text()).not.toEqual(oldText)
