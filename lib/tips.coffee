@@ -5,4 +5,5 @@ module.exports = [
   'You can focus the Tree View with {tree-view:toggle-focus}'
   'You can split a pane with {pane:split-right}'
   'You can jump to a method in the editor using {symbols-view:toggle-file-symbols}'
+  'You can install packages and themes from the Settings View {settings-view:open}'
 ]
