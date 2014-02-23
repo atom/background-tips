@@ -3,7 +3,7 @@
   "main": "./lib/background-tips",
   "version": "0.7.0",
   "private": true,
-  "description": "Shows application tips in the background when no buffers are open.",
+  "description": "Displays tips about Atom in the background when there are no editors open.",
   "repository": "https://github.com/atom/background-tips",
   "licenses": [
     {
