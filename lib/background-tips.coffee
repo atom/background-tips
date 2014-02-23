@@ -1,10 +1,8 @@
 BackgroundTipsView = require './background-tips-view'
 
 module.exports =
-  backgroundTipsView: null
-
-  activate: (state) ->
-    @backgroundTipsView = new BackgroundTipsView(state.backgroundTipsViewState)
+  activate: ->
+    @backgroundTipsView = new BackgroundTipsView()
 
   deactivate: ->
     @backgroundTipsView.detach()
