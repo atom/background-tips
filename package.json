@@ -5,12 +5,7 @@
   "private": true,
   "description": "Displays tips about Atom in the background when there are no editors open.",
   "repository": "https://github.com/atom/background-tips",
-  "licenses": [
-    {
-      "type": "Apache",
-      "url": "http://github.com/atom/background-tips/raw/master/LICENSE.md"
-    }
-  ],
+  "license": "MIT",
   "engines": {
     "atom": ">0.42.0"
   }
