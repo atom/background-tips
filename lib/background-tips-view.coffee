@@ -20,7 +20,10 @@ class BackgroundTipsView extends View
     setTimeout @start, @constructor.startDelay
 
   attach: ->
-    atom.workspaceView.getActivePane().append(this)
+    pane = atom.workspaceView.getActivePane()
+    top = pane.children('.item-views').position()?.top ? 0
+    @css('top', top)
+    pane.append(this)
 
   updateVisibility: ->
     if @shouldBeAttached()
