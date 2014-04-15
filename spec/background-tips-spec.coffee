@@ -29,7 +29,7 @@ describe "BackgroundTips", ->
 
     describe "when the pane is empty", ->
       it "attaches the view after a delay", ->
-        expect(atom.workspaceView.getActivePaneViewView().getItems().length).toBe 0
+        expect(atom.workspaceView.getActivePaneView().getItems().length).toBe 0
 
         activatePackage ->
           expect(backgroundTipsView.parent()).not.toExist()
