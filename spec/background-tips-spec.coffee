@@ -25,7 +25,7 @@ describe "BackgroundTips", ->
   describe "when the package is activated when there is only one pane", ->
     beforeEach ->
       atom.workspaceView = new WorkspaceView
-      expect(atom.workspaceView.getPanes().length).toBe 1
+      expect(atom.workspaceView.getPaneViews().length).toBe 1
 
     describe "when the pane is empty", ->
       it "attaches the view after a delay", ->
@@ -57,7 +57,7 @@ describe "BackgroundTips", ->
     beforeEach ->
       atom.workspaceView = new WorkspaceView
       atom.workspaceView.getActivePane().splitRight()
-      expect(atom.workspaceView.getPanes().length).toBe 2
+      expect(atom.workspaceView.getPaneViews().length).toBe 2
 
     it "does not attach the view", ->
       activatePackage ->
@@ -74,7 +74,7 @@ describe "BackgroundTips", ->
   describe "when the view is attached", ->
     beforeEach ->
       atom.workspaceView = new WorkspaceView
-      expect(atom.workspaceView.getPanes().length).toBe 1
+      expect(atom.workspaceView.getPaneViews().length).toBe 1
 
       activatePackage ->
         advanceClock BackgroundTipsView.startDelay + 1
