@@ -32,7 +32,7 @@ class BackgroundTipsView extends View
       @stop()
 
   shouldBeAttached: ->
-    atom.workspaceView.getPaneViews().length is 1 and not atom.workspaceView.getActivePaneItem()?
+    atom.workspaceView.getPaneViews().length is 1 and not atom.workspace.getActivePaneItem()?
 
   start: =>
     return if not @shouldBeAttached() or @interval?
