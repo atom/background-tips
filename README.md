@@ -1,4 +1,4 @@
-## Background Tips package
+## Background Tips package [![Build Status](https://travis-ci.org/atom/background-tips.svg?branch=master)](https://travis-ci.org/atom/background-tips)
 
 Displays tips about Atom in the background when there are no open editors.
 
