@@ -66,8 +66,16 @@ class BackgroundTipsView extends View
 
   renderTip: (str) ->
     str = str.replace /\{(.+)\}/g, (match, command) =>
+      scopeAndCommand = command.split('>')
+      [scope, command] = scopeAndCommand if scopeAndCommand.length > 1
       bindings = atom.keymap.findKeyBindings(command: command.trim())
-      binding = @getKeyBindingForCurrentPlatform(bindings)
+
+      if scope
+        for binding in bindings
+          break if binding.selector == scope
+      else
+        binding = @getKeyBindingForCurrentPlatform(bindings)
+
       if binding?
         "<span class=\"keystroke\">#{_.humanizeKeystroke(binding.keystrokes)}</span>"
       else
