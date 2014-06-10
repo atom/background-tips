@@ -76,8 +76,9 @@ class BackgroundTipsView extends View
       else
         binding = @getKeyBindingForCurrentPlatform(bindings)
 
-      if binding?
-        "<span class=\"keystroke\">#{_.humanizeKeystroke(binding.keystrokes)}</span>"
+      if binding?.keystrokes
+        keystrokeLabel = _.humanizeKeystroke(binding.keystrokes).replace(/\s+/g, '&nbsp;')
+        "<span class=\"keystroke\">#{keystrokeLabel}</span>"
       else
         command
     str
