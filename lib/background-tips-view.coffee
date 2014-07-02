@@ -19,6 +19,14 @@ class BackgroundTipsView extends View
     atom.workspaceView.on 'pane-container:active-pane-item-changed pane:attached pane:removed', => @updateVisibility()
     setTimeout @start, @constructor.startDelay
 
+  configureReactEditorTip: ->
+    reactEditorTip = @renderTip('You can enable the new, faster React-based editor from the Settings View {settings-view:open}')
+    @subscribe atom.config.observe 'core.useReactEditor', (useReactEditor) =>
+      if useReactEditor
+        _.remove(Tips, reactEditorTip)
+      else
+        Tips.push(reactEditorTip)
+
   attach: ->
     paneView = atom.workspaceView.getActivePaneView()
     top = paneView.children('.item-views').position()?.top ? 0
@@ -62,6 +70,7 @@ class BackgroundTipsView extends View
     return if @tipsRendered
     for tip, i in Tips
       Tips[i] = @renderTip(tip)
+    @configureReactEditorTip()
     @tipsRendered = true
 
   renderTip: (str) ->
