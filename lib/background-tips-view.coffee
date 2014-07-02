@@ -16,7 +16,7 @@ class BackgroundTipsView extends View
   initialize: ->
     @index = -1
 
-    atom.workspaceView.on 'pane-container:active-pane-item-changed pane:attached pane:removed', => @updateVisibility()
+    @subscribe atom.workspaceView.on 'pane-container:active-pane-item-changed pane:attached pane:removed', => @updateVisibility()
     setTimeout @start, @constructor.startDelay
 
   configureReactEditorTip: ->
