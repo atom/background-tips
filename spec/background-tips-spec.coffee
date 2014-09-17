@@ -38,7 +38,7 @@ describe "BackgroundTips", ->
 
     describe "when the pane is not empty", ->
       it "does not attach the view", ->
-        atom.workspaceView.getActivePaneView().activateItem($("item"))
+        atom.workspaceView.getActivePaneView().activateItem($("<div>item</div>"))
 
         activatePackage ->
           advanceClock BackgroundTipsView.startDelay + 1
