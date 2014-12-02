@@ -1,4 +1,4 @@
-{WorkspaceView, $} = require 'atom'
+{$} = require 'space-pen'
 
 BackgroundTipsView = require '../lib/background-tips-view'
 
@@ -8,7 +8,7 @@ BackgroundTipsView = require '../lib/background-tips-view'
 # or `fdescribe`). Remove the `f` to unfocus the block.
 
 describe "BackgroundTips", ->
-  [backgroundTips, backgroundTipsView] = []
+  [workspaceElement, backgroundTips, backgroundTipsView] = []
 
   beforeEach ->
     BackgroundTipsView.displayDuration = 50
@@ -24,12 +24,12 @@ describe "BackgroundTips", ->
 
   describe "when the package is activated when there is only one pane", ->
     beforeEach ->
-      atom.workspaceView = new WorkspaceView
-      expect(atom.workspaceView.getPaneViews().length).toBe 1
+      workspaceElement = atom.views.getView(atom.workspace)
+      expect(atom.workspace.getPanes().length).toBe 1
 
     describe "when the pane is empty", ->
       it "attaches the view after a delay", ->
-        expect(atom.workspaceView.getActivePaneView().getItems().length).toBe 0
+        expect(atom.workspace.getActivePane().getItems().length).toBe 0
 
         activatePackage ->
           expect(backgroundTipsView.parent()).not.toExist()
@@ -38,7 +38,7 @@ describe "BackgroundTips", ->
 
     describe "when the pane is not empty", ->
       it "does not attach the view", ->
-        atom.workspaceView.getActivePaneView().activateItem($("<div>item</div>"))
+        waitsForPromise -> atom.workspace.open()
 
         activatePackage ->
           advanceClock BackgroundTipsView.startDelay + 1
@@ -50,14 +50,13 @@ describe "BackgroundTips", ->
           advanceClock BackgroundTipsView.startDelay + 1
           expect(backgroundTipsView.parent()).toExist()
 
-          atom.workspaceView.getActivePaneView().splitRight()
+          atom.workspace.getActivePane().splitRight()
           expect(backgroundTipsView.parent()).not.toExist()
 
   describe "when the package is activated when there are multiple panes", ->
     beforeEach ->
-      atom.workspaceView = new WorkspaceView
-      atom.workspaceView.getActivePaneView().splitRight()
-      expect(atom.workspaceView.getPaneViews().length).toBe 2
+      atom.workspace.getActivePane().splitRight()
+      expect(atom.workspace.getPanes().length).toBe 2
 
     it "does not attach the view", ->
       activatePackage ->
@@ -67,14 +66,13 @@ describe "BackgroundTips", ->
     describe "when all but the last pane is destroyed", ->
       it "attaches the view", ->
         activatePackage ->
-          atom.workspaceView.getActivePaneView().remove()
+          atom.workspace.getActivePane().destroy()
           advanceClock BackgroundTipsView.startDelay + 1
           expect(backgroundTipsView.parent()).toExist()
 
   describe "when the view is attached", ->
     beforeEach ->
-      atom.workspaceView = new WorkspaceView
-      expect(atom.workspaceView.getPaneViews().length).toBe 1
+      expect(atom.workspace.getPanes().length).toBe 1
 
       activatePackage ->
         advanceClock BackgroundTipsView.startDelay + 1

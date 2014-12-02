@@ -1,5 +1,5 @@
 _ = require 'underscore-plus'
-{View} = require 'space-pen'
+{View, $} = require 'space-pen'
 {CompositeDisposable} = require 'atom'
 
 Tips = require './tips'
@@ -29,7 +29,7 @@ class BackgroundTipsView extends View
     super
 
   attach: ->
-    paneView = atom.workspaceView.getActivePaneView()
+    paneView = $(atom.views.getView(atom.workspace.getActivePane()))
     top = paneView.children('.item-views').position()?.top ? 0
     @css('top', top)
     paneView.append(this)
@@ -41,7 +41,7 @@ class BackgroundTipsView extends View
       @stop()
 
   shouldBeAttached: ->
-    atom.workspaceView.getPaneViews().length is 1 and not atom.workspace.getActivePaneItem()?
+    atom.workspace.getPanes().length is 1 and not atom.workspace.getActivePaneItem()?
 
   start: =>
     return if not @shouldBeAttached() or @interval?
