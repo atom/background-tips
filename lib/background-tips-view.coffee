@@ -16,7 +16,10 @@ class BackgroundTipsView extends View
   initialize: ->
     @index = -1
 
-    @subscribe atom.workspaceView.on 'pane-container:active-pane-item-changed pane:attached pane:removed', => @updateVisibility()
+    @subscribe atom.workspace.onDidAddPane(@updateVisibility)
+    @subscribe atom.workspace.onDidDestroyPane(@updateVisibility)
+    @subscribe atom.workspace.onDidChangeActivePaneItem(@updateVisibility)
+
     setTimeout @start, @constructor.startDelay
 
   attach: ->
@@ -25,7 +28,7 @@ class BackgroundTipsView extends View
     @css('top', top)
     paneView.append(this)
 
-  updateVisibility: ->
+  updateVisibility: =>
     if @shouldBeAttached()
       @start()
     else
