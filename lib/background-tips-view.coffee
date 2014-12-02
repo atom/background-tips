@@ -1,5 +1,6 @@
 _ = require 'underscore-plus'
-{View} = require 'atom'
+{View} = require 'space-pen'
+{CompositeDisposable} = require 'atom'
 
 Tips = require './tips'
 
@@ -16,11 +17,16 @@ class BackgroundTipsView extends View
   initialize: ->
     @index = -1
 
-    @subscribe atom.workspace.onDidAddPane(@updateVisibility)
-    @subscribe atom.workspace.onDidDestroyPane(@updateVisibility)
-    @subscribe atom.workspace.onDidChangeActivePaneItem(@updateVisibility)
+    @disposables = new CompositeDisposable
+    @disposables.add atom.workspace.onDidAddPane(@updateVisibility)
+    @disposables.add atom.workspace.onDidDestroyPane(@updateVisibility)
+    @disposables.add atom.workspace.onDidChangeActivePaneItem(@updateVisibility)
 
     setTimeout @start, @constructor.startDelay
+
+  remove: ->
+    @disposables.dispose()
+    super
 
   attach: ->
     paneView = atom.workspaceView.getActivePaneView()
