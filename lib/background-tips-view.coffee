@@ -24,8 +24,8 @@ class BackgroundTipsView extends View
 
     setTimeout @start, @constructor.startDelay
 
-  remove: ->
-    @disposables.dispose()
+  remove: (selector, keepData) ->
+    @disposables.dispose() unless keepData
     super
 
   attach: ->

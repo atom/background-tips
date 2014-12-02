@@ -70,6 +70,12 @@ describe "BackgroundTips", ->
           advanceClock BackgroundTipsView.startDelay + 1
           expect(backgroundTipsView.parent()).toExist()
 
+          atom.workspace.getActivePane().splitRight()
+          expect(backgroundTipsView.parent()).not.toExist()
+
+          atom.workspace.getActivePane().destroy()
+          expect(backgroundTipsView.parent()).toExist()
+
   describe "when the view is attached", ->
     beforeEach ->
       expect(atom.workspace.getPanes().length).toBe 1
