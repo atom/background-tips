@@ -1,5 +1,6 @@
 _ = require 'underscore-plus'
-{View} = require 'atom'
+{View, $} = require 'space-pen'
+{CompositeDisposable} = require 'atom'
 
 Tips = require './tips'
 
@@ -16,23 +17,31 @@ class BackgroundTipsView extends View
   initialize: ->
     @index = -1
 
-    @subscribe atom.workspaceView.on 'pane-container:active-pane-item-changed pane:attached pane:removed', => @updateVisibility()
+    @disposables = new CompositeDisposable
+    @disposables.add atom.workspace.onDidAddPane(@updateVisibility)
+    @disposables.add atom.workspace.onDidDestroyPane(@updateVisibility)
+    @disposables.add atom.workspace.onDidChangeActivePaneItem(@updateVisibility)
+
     setTimeout @start, @constructor.startDelay
 
+  remove: (selector, keepData) ->
+    @disposables.dispose() unless keepData
+    super
+
   attach: ->
-    paneView = atom.workspaceView.getActivePaneView()
+    paneView = $(atom.views.getView(atom.workspace.getActivePane()))
     top = paneView.children('.item-views').position()?.top ? 0
     @css('top', top)
     paneView.append(this)
 
-  updateVisibility: ->
+  updateVisibility: =>
     if @shouldBeAttached()
       @start()
     else
       @stop()
 
   shouldBeAttached: ->
-    atom.workspaceView.getPaneViews().length is 1 and not atom.workspace.getActivePaneItem()?
+    atom.workspace.getPanes().length is 1 and not atom.workspace.getActivePaneItem()?
 
   start: =>
     return if not @shouldBeAttached() or @interval?

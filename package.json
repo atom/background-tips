@@ -10,6 +10,7 @@
     "atom": ">0.42.0"
   },
   "dependencies": {
+    "space-pen": "^4.2.2",
     "underscore-plus": "1.x"
   }
 }
