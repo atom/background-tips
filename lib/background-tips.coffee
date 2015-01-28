@@ -4,4 +4,4 @@ module.exports =
     @backgroundTipsView = new BackgroundTipsView()
 
   deactivate: ->
-    @backgroundTipsView.remove()
+    @backgroundTipsView.destroy()

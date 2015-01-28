@@ -8,12 +8,12 @@ Template = """
   </ul>
 """
 
-StartDelay = 1000
-DisplayDuration = 10000
-FadeDuration = 300
-
 module.exports =
 class BackgroundTipsElement extends HTMLElement
+  StartDelay: 1000
+  DisplayDuration: 10000
+  FadeDuration: 300
+
   createdCallback: ->
     @index = -1
 
@@ -22,14 +22,16 @@ class BackgroundTipsElement extends HTMLElement
     @disposables.add atom.workspace.onDidDestroyPane => @updateVisibility()
     @disposables.add atom.workspace.onDidChangeActivePaneItem => @updateVisibility()
 
-    setTimeout((=> @start()), StartDelay)
+    @startTimeout = setTimeout((=> @start()), @StartDelay)
 
   attachedCallback: ->
     @innerHTML = Template
     @message = @querySelector('.message')
 
   destroy: ->
+    @stop()
     @disposables.dispose()
+    @destroyed = true
 
   attach: ->
     paneView = atom.views.getView(atom.workspace.getActivePane())
@@ -55,11 +57,13 @@ class BackgroundTipsElement extends HTMLElement
     @randomizeIndex()
     @attach()
     @showNextTip()
-    @interval = setInterval((=> @showNextTip()), DisplayDuration)
+    @interval = setInterval((=> @showNextTip()), @DisplayDuration)
 
   stop: ->
     @remove()
     clearInterval(@interval) if @interval?
+    clearTimeout(@startTimeout)
+    clearTimeout(@nextTipTimeout)
     @interval = null
 
   randomizeIndex: ->
@@ -69,10 +73,11 @@ class BackgroundTipsElement extends HTMLElement
   showNextTip: ->
     @index = ++@index % Tips.length
     @message.classList.remove('fade-in')
-    setTimeout =>
+    @nextTipTimeout = setTimeout =>
       @message.innerHTML = Tips[@index]
+      @message.classList.remove('fade-out')
       @message.classList.add('fade-in')
-    , FadeDuration
+    , @FadeDuration
 
   renderTips: ->
     return if @tipsRendered
