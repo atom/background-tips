@@ -8,18 +8,28 @@ atom-workspace .horizontal .vertical {
   position: relative;
 }
 
-ul.background-tips {
-  -webkit-user-select: none;
-  cursor: default;
+background-tips {
+  display: block;
 
-  li {
-    padding: 0 30px;
+  ul {
+    -webkit-user-select: none;
+    cursor: default;
 
-    .keystroke {
-      border: 2px solid;
-      padding: 0 @component-padding/2;
-      border-radius: @component-border-radius * 3;
-      font-family: Helvetica, Arial, sans-serif;
+    li {
+      opacity: 0;
+      padding: 0 30px;
+      transition: opacity .3s;
+
+      .keystroke {
+        border: 2px solid;
+        padding: 0 @component-padding/2;
+        border-radius: @component-border-radius * 3;
+        font-family: Helvetica, Arial, sans-serif;
+      }
     }
+  }
+
+  .fade-in {
+    opacity: 1;
   }
 }

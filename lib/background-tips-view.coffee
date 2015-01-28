@@ -1,40 +1,46 @@
 _ = require 'underscore-plus'
-{View, $} = require 'space-pen'
 {CompositeDisposable} = require 'atom'
-
 Tips = require './tips'
 
+Template = """
+  <ul class="centered background-message">
+    <li class="message"></li>
+  </ul>
+"""
+
+StartDelay = 1000
+DisplayDuration = 10000
+FadeDuration = 300
+
 module.exports =
-class BackgroundTipsView extends View
-  @startDelay: 1000
-  @displayDuration: 10000
-  @fadeDuration: 300
-
-  @content: ->
-    @ul class: 'background-tips centered background-message', =>
-      @li outlet: 'message'
-
-  initialize: ->
+class BackgroundTipsElement extends HTMLElement
+  createdCallback: ->
     @index = -1
 
     @disposables = new CompositeDisposable
-    @disposables.add atom.workspace.onDidAddPane(@updateVisibility)
-    @disposables.add atom.workspace.onDidDestroyPane(@updateVisibility)
-    @disposables.add atom.workspace.onDidChangeActivePaneItem(@updateVisibility)
+    @disposables.add atom.workspace.onDidAddPane => @updateVisibility()
+    @disposables.add atom.workspace.onDidDestroyPane => @updateVisibility()
+    @disposables.add atom.workspace.onDidChangeActivePaneItem => @updateVisibility()
 
-    setTimeout @start, @constructor.startDelay
+    setTimeout((=> @start()), StartDelay)
 
-  remove: (selector, keepData) ->
-    @disposables.dispose() unless keepData
-    super
+  attachedCallback: ->
+    @innerHTML = Template
+    @message = @querySelector('.message')
+
+  destroy: ->
+    @disposables.dispose()
 
   attach: ->
-    paneView = $(atom.views.getView(atom.workspace.getActivePane()))
-    top = paneView.children('.item-views').position()?.top ? 0
-    @css('top', top)
-    paneView.append(this)
+    paneView = atom.views.getView(atom.workspace.getActivePane())
+    top = paneView.querySelector('.item-views')?.offsetTop ? 0
+    @style.top = top + 'px'
+    paneView.appendChild(this)
 
-  updateVisibility: =>
+  detach: ->
+    @remove()
+
+  updateVisibility: ->
     if @shouldBeAttached()
       @start()
     else
@@ -43,17 +49,16 @@ class BackgroundTipsView extends View
   shouldBeAttached: ->
     atom.workspace.getPanes().length is 1 and not atom.workspace.getActivePaneItem()?
 
-  start: =>
+  start: ->
     return if not @shouldBeAttached() or @interval?
     @renderTips()
     @randomizeIndex()
-    @message.hide()
     @attach()
     @showNextTip()
-    @interval = setInterval @showNextTip, @constructor.displayDuration
+    @interval = setInterval((=> @showNextTip()), DisplayDuration)
 
-  stop: =>
-    @detach()
+  stop: ->
+    @remove()
     clearInterval(@interval) if @interval?
     @interval = null
 
@@ -61,11 +66,13 @@ class BackgroundTipsView extends View
     len = Tips.length
     @index = Math.round(Math.random() * len) % len
 
-  showNextTip: =>
+  showNextTip: ->
     @index = ++@index % Tips.length
-    @message.fadeOut @constructor.fadeDuration, =>
-      @message.html(Tips[@index])
-      @message.fadeIn(@constructor.fadeDuration)
+    @message.classList.remove('fade-in')
+    setTimeout =>
+      @message.innerHTML = Tips[@index]
+      @message.classList.add('fade-in')
+    , FadeDuration
 
   renderTips: ->
     return if @tipsRendered
@@ -96,3 +103,5 @@ class BackgroundTipsView extends View
     return unless bindings?.length
     return binding for binding in bindings when binding.selector.indexOf(process.platform) != -1
     return bindings[0]
+
+module.exports = document.registerElement 'background-tips', prototype: BackgroundTipsElement.prototype

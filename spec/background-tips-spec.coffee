@@ -1,5 +1,3 @@
-{$} = require 'space-pen'
-
 BackgroundTipsView = require '../lib/background-tips-view'
 
 # Use the command `window:run-package-specs` (cmd-alt-ctrl-p) to run specs.
