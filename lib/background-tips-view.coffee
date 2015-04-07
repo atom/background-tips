@@ -89,7 +89,7 @@ class BackgroundTipsElement extends HTMLElement
     str = str.replace /\{(.+)\}/g, (match, command) =>
       scopeAndCommand = command.split('>')
       [scope, command] = scopeAndCommand if scopeAndCommand.length > 1
-      bindings = atom.keymap.findKeyBindings(command: command.trim())
+      bindings = atom.keymaps.findKeyBindings(command: command.trim())
 
       if scope
         for binding in bindings
