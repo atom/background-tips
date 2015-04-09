@@ -93,7 +93,7 @@ class BackgroundTipsElement extends HTMLElement
 
       if scope
         for binding in bindings
-          break if binding.selector == scope
+          break if binding.selector is scope
       else
         binding = @getKeyBindingForCurrentPlatform(bindings)
 
@@ -106,7 +106,7 @@ class BackgroundTipsElement extends HTMLElement
 
   getKeyBindingForCurrentPlatform: (bindings) ->
     return unless bindings?.length
-    return binding for binding in bindings when binding.selector.indexOf(process.platform) != -1
+    return binding for binding in bindings when binding.selector.indexOf(process.platform) isnt -1
     return bindings[0]
 
 module.exports = document.registerElement 'background-tips', prototype: BackgroundTipsElement.prototype
