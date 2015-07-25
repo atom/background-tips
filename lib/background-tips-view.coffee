@@ -75,7 +75,6 @@ class BackgroundTipsElement extends HTMLElement
     @message.classList.remove('fade-in')
     @nextTipTimeout = setTimeout =>
       @message.innerHTML = Tips[@index]
-      @message.classList.remove('fade-out')
       @message.classList.add('fade-in')
     , @FadeDuration
 
