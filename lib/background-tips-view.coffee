@@ -1,6 +1,8 @@
 _ = require 'underscore-plus'
 {CompositeDisposable} = require 'atom'
-Tips = require './tips'
+
+PackageTips = {}
+Tips = []
 
 Template = """
   <ul class="centered background-message">
@@ -21,6 +23,13 @@ class BackgroundTipsElement extends HTMLElement
     @disposables.add atom.workspace.onDidAddPane => @updateVisibility()
     @disposables.add atom.workspace.onDidDestroyPane => @updateVisibility()
     @disposables.add atom.workspace.onDidChangeActivePaneItem => @updateVisibility()
+    @disposables.add atom.packages.onDidActivateInitialPackages =>
+      for p in atom.packages.getLoadedPackages()
+        @addTips p.name, p.metadata.tips if p.metadata.tips?
+    @disposables.add atom.packages.onDidLoadPackage (p) =>
+      @addTips p.name, p.metadata.tips if p.metadata.tips?
+    @disposables.add atom.packages.onDidUnloadPackage (p) =>
+      @removeTips p.name if p.metadata.tips?
 
     @startTimeout = setTimeout((=> @start()), @StartDelay)
 
@@ -41,6 +50,22 @@ class BackgroundTipsElement extends HTMLElement
 
   detach: ->
     @remove()
+
+  addTips: (name, tips) ->
+    PackageTips[name] = []
+    for tip in tips
+      PackageTips[name].push @renderTip(tip) if tip?
+    Tips = Tips.concat PackageTips[name]
+
+  removeTips: (name) ->
+    PackageTips[name] = null
+    Tips = []
+    for name in Object.keys(PackageTips)
+      Tips = Tips.concat PackageTips[name] if PackageTips[name]?
+    clearTimeout @nextTipTimeout
+
+  getTips: ->
+    Tips
 
   updateVisibility: ->
     if @shouldBeAttached()
