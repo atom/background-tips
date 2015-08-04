@@ -11,15 +11,24 @@ atom-workspace .horizontal .vertical {
 background-tips {
   display: block;
   pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
 
-  ul {
+  .background-message {
     -webkit-user-select: none;
     cursor: default;
 
-    li {
+    .message {
+      padding: 0 @component-padding*3;
       opacity: 0;
-      padding: 0 30px;
-      transition: opacity .3s;
+      transition: opacity .3s ease-in-out;
+      &.fade-in {
+        opacity: 1;
+      }
 
       .keystroke {
         border: 2px solid;
@@ -28,9 +37,5 @@ background-tips {
         font-family: "Helvetica Neue", Arial, sans-serif;
       }
     }
-  }
-
-  .fade-in {
-    opacity: 1;
   }
 }
