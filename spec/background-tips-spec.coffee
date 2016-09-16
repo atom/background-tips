@@ -6,7 +6,7 @@ BackgroundTipsView = require '../lib/background-tips-view'
 # or `fdescribe`). Remove the `f` to unfocus the block.
 
 describe "BackgroundTips", ->
-  [workspaceElement, backgroundTips, backgroundTipsView] = []
+  [workspaceElement, backgroundTipsView] = []
 
   BackgroundTipsView::DisplayDuration = 5
   BackgroundTipsView::FadeDuration = 1
