@@ -49,7 +49,8 @@ class BackgroundTipsElement extends HTMLElement
       @stop()
 
   shouldBeAttached: ->
-    atom.workspace.getPanes().length is 1 and not atom.workspace.getActivePaneItem()?
+    # TODO: Remove this after atom/atom#13977 lands in favor of unguarded `getCenter()` call
+    (atom.workspace.getCenter?() ? atom.workspace).getPanes().length is 1 and not atom.workspace.getActivePaneItem()?
 
   start: ->
     return if not @shouldBeAttached() or @interval?
