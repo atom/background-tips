@@ -20,6 +20,8 @@ describe "BackgroundTips", ->
         {backgroundTipsView} = mainModule
 
     runs ->
+      {name, metadata} = atom.packages.getActivePackage('background-tips')
+      backgroundTipsView.addTips name, metadata.tips
       callback()
 
   beforeEach ->
@@ -97,3 +99,19 @@ describe "BackgroundTips", ->
       runs ->
         advanceClock BackgroundTipsView::FadeDuration
         expect(backgroundTipsView.message.textContent).not.toEqual(oldText)
+
+  describe "when adding tips", ->
+    beforeEach ->
+      activatePackage ->
+        backgroundTipsView.addTips 'test-package', ['Test 1']
+
+    it "adds the tips", ->
+      expect(backgroundTipsView.getTips()).toContain 'Test 1'
+
+  describe "when removing tips", ->
+    beforeEach ->
+      activatePackage ->
+        backgroundTipsView.removeTips 'test-package'
+
+    it "removes the tips", ->
+      expect(backgroundTipsView.getTips()).not.toContain 'Test 1'
