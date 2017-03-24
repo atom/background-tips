@@ -1,5 +1,5 @@
 _ = require 'underscore-plus'
-{CompositeDisposable} = require 'atom'
+{CompositeDisposable} = require 'event-kit'
 Tips = require './tips'
 
 Template = """
@@ -9,12 +9,13 @@ Template = """
 """
 
 module.exports =
-class BackgroundTipsElement extends HTMLElement
+class BackgroundTipsElement
   StartDelay: 1000
   DisplayDuration: 10000
   FadeDuration: 300
 
-  createdCallback: ->
+  constructor: ->
+    @element = document.createElement('background-tips')
     @index = -1
 
     @disposables = new CompositeDisposable
@@ -24,23 +25,22 @@ class BackgroundTipsElement extends HTMLElement
 
     @startTimeout = setTimeout((=> @start()), @StartDelay)
 
-  attachedCallback: ->
-    @innerHTML = Template
-    @message = @querySelector('.message')
-
   destroy: ->
     @stop()
     @disposables.dispose()
     @destroyed = true
 
   attach: ->
+    @element.innerHTML = Template
+    @message = @element.querySelector('.message')
+
     paneView = atom.views.getView(atom.workspace.getActivePane())
     top = paneView.querySelector('.item-views')?.offsetTop ? 0
-    @style.top = top + 'px'
-    paneView.appendChild(this)
+    @element.style.top = top + 'px'
+    paneView.appendChild(@element)
 
   detach: ->
-    @remove()
+    @element.remove()
 
   updateVisibility: ->
     if @shouldBeAttached()
@@ -61,7 +61,7 @@ class BackgroundTipsElement extends HTMLElement
     @interval = setInterval((=> @showNextTip()), @DisplayDuration)
 
   stop: ->
-    @remove()
+    @element.remove()
     clearInterval(@interval) if @interval?
     clearTimeout(@startTimeout)
     clearTimeout(@nextTipTimeout)
@@ -108,5 +108,3 @@ class BackgroundTipsElement extends HTMLElement
     return unless bindings?.length
     return binding for binding in bindings when binding.selector.indexOf(process.platform) isnt -1
     return bindings[0]
-
-module.exports = document.registerElement 'background-tips', prototype: BackgroundTipsElement.prototype
