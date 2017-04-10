@@ -19,9 +19,14 @@ class BackgroundTipsElement
     @index = -1
 
     @disposables = new CompositeDisposable
-    @disposables.add atom.workspace.onDidAddPane => @updateVisibility()
-    @disposables.add atom.workspace.onDidDestroyPane => @updateVisibility()
-    @disposables.add atom.workspace.onDidChangeActivePaneItem => @updateVisibility()
+
+    # TODO: Remove conditional and use atom.workspace.getCenter directly
+    # once 1.17 lands on stable.
+    @workspaceCenter = atom.workspace.getCenter?() ? atom.workspace
+
+    @disposables.add @workspaceCenter.onDidAddPane => @updateVisibility()
+    @disposables.add @workspaceCenter.onDidDestroyPane => @updateVisibility()
+    @disposables.add @workspaceCenter.onDidChangeActivePaneItem => @updateVisibility()
 
     @startTimeout = setTimeout((=> @start()), @StartDelay)
 
@@ -34,7 +39,7 @@ class BackgroundTipsElement
     @element.innerHTML = Template
     @message = @element.querySelector('.message')
 
-    paneView = atom.views.getView(atom.workspace.getActivePane())
+    paneView = atom.views.getView(@workspaceCenter.getActivePane())
     top = paneView.querySelector('.item-views')?.offsetTop ? 0
     @element.style.top = top + 'px'
     paneView.appendChild(@element)
@@ -49,8 +54,7 @@ class BackgroundTipsElement
       @stop()
 
   shouldBeAttached: ->
-    # TODO: Remove this after atom/atom#13977 lands in favor of unguarded `getCenter()` call
-    (atom.workspace.getCenter?() ? atom.workspace).getPanes().length is 1 and not atom.workspace.getActivePaneItem()?
+    @workspaceCenter.getPanes().length is 1 and not @workspaceCenter.getActivePaneItem()?
 
   start: ->
     return if not @shouldBeAttached() or @interval?
