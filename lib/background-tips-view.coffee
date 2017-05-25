@@ -102,8 +102,8 @@ class BackgroundTipsElement
         binding = @getKeyBindingForCurrentPlatform(bindings)
 
       if binding?.keystrokes
-        keystrokeLabel = _.humanizeKeystroke(binding.keystrokes).replace(/\s+/g, '&nbsp;')
-        "<span class=\"keystroke\">#{keystrokeLabel}</span>"
+        keystrokeLabel = _.humanizeKeystroke(binding.keystrokes).replace(/\s+/g, '</span>&thinsp;<span class="keystroke">')
+        "<span class='keystroke'>#{keystrokeLabel}</span>"
       else
         command
     str
