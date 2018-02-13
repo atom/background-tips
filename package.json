@@ -10,7 +10,6 @@
     "atom": ">0.42.0"
   },
   "dependencies": {
-    "event-kit": "^2.2.0",
     "underscore-plus": "1.x"
   },
   "devDependencies": {
