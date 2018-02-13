@@ -11,9 +11,6 @@ describe "BackgroundTips", ->
   BackgroundTipsView::DisplayDuration = 5
   BackgroundTipsView::FadeDuration = 1
 
-  # TODO: Remove this after atom/atom#13977 lands in favor of unguarded `getCenter()` calls
-  getCenter = -> atom.workspace.getCenter?() ? atom.workspace
-
   activatePackage = (callback) ->
     waitsForPromise ->
       atom.packages.activatePackage('background-tips').then ({mainModule}) ->
@@ -28,7 +25,7 @@ describe "BackgroundTips", ->
 
   describe "when the package is activated when there is only one pane", ->
     beforeEach ->
-      expect(getCenter().getPanes().length).toBe 1
+      expect(atom.workspace.getCenter().getPanes().length).toBe 1
 
     describe "when the pane is empty", ->
       it "attaches the view after a delay", ->
@@ -59,7 +56,7 @@ describe "BackgroundTips", ->
   describe "when the package is activated when there are multiple panes", ->
     beforeEach ->
       atom.workspace.getActivePane().splitRight()
-      expect(getCenter().getPanes().length).toBe 2
+      expect(atom.workspace.getCenter().getPanes().length).toBe 2
 
     it "does not attach the view", ->
       activatePackage ->
@@ -81,7 +78,7 @@ describe "BackgroundTips", ->
 
   describe "when the view is attached", ->
     beforeEach ->
-      expect(getCenter().getPanes().length).toBe 1
+      expect(atom.workspace.getCenter().getPanes().length).toBe 1
 
       activatePackage ->
         advanceClock BackgroundTipsView::StartDelay
