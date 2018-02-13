@@ -17,12 +17,9 @@ class BackgroundTipsElement
   constructor: ->
     @element = document.createElement('background-tips')
     @index = -1
+    @workspaceCenter = atom.workspace.getCenter()
 
     @disposables = new CompositeDisposable
-
-    # TODO: Remove conditional and use atom.workspace.getCenter directly
-    # once 1.17 lands on stable.
-    @workspaceCenter = atom.workspace.getCenter?() ? atom.workspace
 
     @disposables.add @workspaceCenter.onDidAddPane => @updateVisibility()
     @disposables.add @workspaceCenter.onDidDestroyPane => @updateVisibility()
