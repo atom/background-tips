@@ -1,8 +1,6 @@
-const BackgroundTipsView = require('../lib/background-tips-view')
+const {it, fit, ffit, afterEach, beforeEach} = require('./async-spec-helpers') // eslint-disable-line no-unused-vars
 
-const {it, fit, ffit, afterEach, beforeEach, timeoutPromise} = require('./async-spec-helpers')
-
-describe("BackgroundTips", () => {
+describe('BackgroundTips', () => {
   let workspaceElement
 
   const activatePackage = async () => {
@@ -16,13 +14,13 @@ describe("BackgroundTips", () => {
     jasmine.useMockClock()
   })
 
-  describe("when the package is activated when there is only one pane", () => {
+  describe('when the package is activated when there is only one pane', () => {
     beforeEach(() => {
       expect(atom.workspace.getCenter().getPanes().length).toBe(1)
     })
 
-    describe("when the pane is empty", () => {
-      it("attaches the view after a delay", async () => {
+    describe('when the pane is empty', () => {
+      it('attaches the view after a delay', async () => {
         expect(atom.workspace.getActivePane().getItems().length).toBe(0)
 
         const backgroundTipsView = await activatePackage()
@@ -32,8 +30,8 @@ describe("BackgroundTips", () => {
       })
     })
 
-    describe("when the pane is not empty", () => {
-      it("does not attach the view", async () => {
+    describe('when the pane is not empty', () => {
+      it('does not attach the view', async () => {
         await atom.workspace.open()
 
         const backgroundTipsView = await activatePackage()
@@ -42,8 +40,8 @@ describe("BackgroundTips", () => {
       })
     })
 
-    describe("when a second pane is created", () => {
-      it("detaches the view", async () => {
+    describe('when a second pane is created', () => {
+      it('detaches the view', async () => {
         const backgroundTipsView = await activatePackage()
         advanceClock(backgroundTipsView.startDelay + 1)
         expect(backgroundTipsView.element.parentNode).toBeTruthy()
@@ -54,20 +52,20 @@ describe("BackgroundTips", () => {
     })
   })
 
-  describe("when the package is activated when there are multiple panes", () => {
+  describe('when the package is activated when there are multiple panes', () => {
     beforeEach(() => {
       atom.workspace.getActivePane().splitRight()
       expect(atom.workspace.getCenter().getPanes().length).toBe(2)
     })
 
-    it("does not attach the view", async () => {
+    it('does not attach the view', async () => {
       const backgroundTipsView = await activatePackage()
       advanceClock(backgroundTipsView.startDelay + 1)
       expect(backgroundTipsView.element.parentNode).toBeFalsy()
     })
 
-    describe("when all but the last pane is destroyed", () => {
-      it("attaches the view", async () => {
+    describe('when all but the last pane is destroyed', () => {
+      it('attaches the view', async () => {
         const backgroundTipsView = await activatePackage()
         atom.workspace.getActivePane().destroy()
         advanceClock(backgroundTipsView.startDelay + 1)
@@ -82,7 +80,7 @@ describe("BackgroundTips", () => {
     })
   })
 
-  describe("when the view is attached", () => {
+  describe('when the view is attached', () => {
     let backgroundTipsView
 
     beforeEach(async () => {
@@ -93,12 +91,12 @@ describe("BackgroundTips", () => {
       advanceClock(backgroundTipsView.fadeDuration)
     })
 
-    it("has text in the message", () => {
+    it('has text in the message', () => {
       expect(backgroundTipsView.element.parentNode).toBeTruthy()
       expect(backgroundTipsView.message.textContent).toBeTruthy()
     })
 
-    it("changes text in the message", async () => {
+    it('changes text in the message', async () => {
       const oldText = backgroundTipsView.message.textContent
       advanceClock(backgroundTipsView.displayDuration)
       advanceClock(backgroundTipsView.fadeDuration)
