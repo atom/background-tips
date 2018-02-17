@@ -1,7 +1,7 @@
 {
   "name": "background-tips",
   "main": "./lib/background-tips",
-  "version": "0.27.2",
+  "version": "0.28.0",
   "private": true,
   "description": "Displays tips about Atom in the background when there are no editors open.",
   "repository": "https://github.com/atom/background-tips",
