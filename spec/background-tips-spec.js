@@ -12,6 +12,7 @@ describe('BackgroundTips', () => {
     workspaceElement = atom.views.getView(atom.workspace)
     jasmine.attachToDOM(workspaceElement)
     jasmine.useMockClock()
+    spyOn(atom.getCurrentWindow(), 'isFocused').andReturn(true)
   })
 
   describe('when the package is activated when there is only one pane', () => {
