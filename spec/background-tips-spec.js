@@ -1,4 +1,4 @@
-const {it, fit, ffit, afterEach, beforeEach} = require('./async-spec-helpers') // eslint-disable-line no-unused-vars
+const {it, fit, ffit, afterEach, beforeEach, emitterEventPromise} = require('./async-spec-helpers') // eslint-disable-line no-unused-vars
 
 describe('BackgroundTips', () => {
   let workspaceElement
@@ -102,6 +102,41 @@ describe('BackgroundTips', () => {
       advanceClock(backgroundTipsView.displayDuration)
       advanceClock(backgroundTipsView.fadeDuration)
       expect(backgroundTipsView.message.textContent).not.toEqual(oldText)
+    })
+  })
+
+  describe('when Atom is not focused but all other requirements are satisfied', () => {
+    beforeEach(() => {
+      jasmine.unspy(atom.getCurrentWindow(), 'isFocused')
+      spyOn(atom.getCurrentWindow(), 'isFocused').andReturn(false)
+    })
+
+    it('does not display the background tips', async () => {
+      expect(atom.workspace.getActivePane().getItems().length).toBe(0)
+
+      const backgroundTipsView = await activatePackage()
+      expect(backgroundTipsView.element.parentNode).toBeFalsy()
+      advanceClock(backgroundTipsView.startDelay + 1)
+      expect(backgroundTipsView.element.parentNode).toBeFalsy()
+    })
+
+    it('reactivates the background tips if the focus event is received', async () => {
+      expect(atom.workspace.getActivePane().getItems().length).toBe(0)
+
+      const backgroundTipsView = await activatePackage()
+      advanceClock(backgroundTipsView.startDelay + 1)
+      expect(backgroundTipsView.element.parentNode).toBeFalsy()
+
+      jasmine.unspy(atom.getCurrentWindow(), 'isFocused')
+      spyOn(atom.getCurrentWindow(), 'isFocused').andReturn(true)
+
+      const focusEvent = emitterEventPromise(atom.getCurrentWindow(), 'focus')
+      atom.getCurrentWindow().emit('focus') // Manually emit to prevent actually blurring + refocusing the window
+
+      await focusEvent
+
+      advanceClock(backgroundTipsView.startDelay + 1)
+      expect(backgroundTipsView.element.parentNode).toBeTruthy()
     })
   })
 })
