@@ -32,9 +32,6 @@ sudo: false
 
 dist: xenial
 
-install:
-  - sudo apt -y install libgconf2-4 # TODO: Remove once Atom 1.39 is stable
-
 addons:
   apt:
     packages:
@@ -42,3 +39,4 @@ addons:
     - fakeroot
     - git
     - libsecret-1-dev
+    - libgconf2-4  # TODO: Remove once Atom 1.39 is stable
