@@ -30,7 +30,10 @@ git:
 
 sudo: false
 
-dist: trusty
+dist: xenial
+
+install:
+  - sudo apt -y install libgconf2-4 # TODO: Remove once Atom 1.39 is stable
 
 addons:
   apt:
