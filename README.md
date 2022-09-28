@@ -1,4 +1,5 @@
-## Background Tips package
+##### Atom and all repositories under Atom will be archived on December 15, 2022. Learn more in our [official announcement](https://github.blog/2022-06-08-sunsetting-atom/)
+ ## Background Tips package
 [![OS X Build Status](https://travis-ci.org/atom/background-tips.svg?branch=master)](https://travis-ci.org/atom/background-tips) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/2utcugietl5vjc7w/branch/master?svg=true)](https://ci.appveyor.com/project/Atom/background-tips/branch/master) [![Dependency Status](https://david-dm.org/atom/background-tips.svg)](https://david-dm.org/atom/background-tips)
 
 Displays tips about Atom in the background when there are no open editors.
